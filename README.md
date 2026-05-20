@@ -1,10 +1,12 @@
+# RoArm Pick and Place
+
 This project controls a RoArm robotic arm with camera-based pick and place.
 
 Use `gui.py` as the main app.
 
 `main.py` is not used anymore and was removed to avoid confusion.
 
-What each file is for:
+## File Overview
 
 - `gui.py` runs the desktop app. This is where you start the project, view the camera feed, chat with the assistant, and control the workflow.
 - `vlm.py` runs the vision model server. It loads SAM3 and returns detections to the GUI through `/tmp/vlm.sock`.
@@ -17,16 +19,15 @@ What each file is for:
 - `.env` stores secrets and runtime config.
 - `.env.example` is the template for `.env`.
 
-What you need:
+## Requirements
 
 - Python 3.10 or newer
 - Linux
-- a USB camera
-- or an Android phone camera through `scrcpy`
+- a USB camera, or an Android phone camera through `scrcpy`
 - access to the RoArm serial device
 - optional CUDA GPU if you want faster SAM3 inference
 
-Basic setup:
+## Setup
 
 ```bash
 python3 -m venv venv
@@ -34,6 +35,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
 ```
+
+## Environment Variables
 
 Edit `.env` and set your values:
 
@@ -44,7 +47,7 @@ OPENAI_API_KEY=ollama
 OPENAI_MODEL=qwen3-8b
 ```
 
-About SAM3 and Hugging Face:
+## SAM3 and Hugging Face
 
 This project uses `facebook/sam3`.
 
@@ -59,7 +62,7 @@ You need to:
 
 If Hugging Face access is not approved yet, SAM3 may fail to load.
 
-Using an Android phone as the camera:
+## Android Phone Camera
 
 If you want to use your Android phone instead of a USB camera, use `cam.sh`.
 
@@ -84,7 +87,7 @@ This requires:
 - `v4l2loopback` installed
 - permission to run the `sudo modprobe` commands in the script
 
-How to run:
+## Run
 
 Start the VLM server first:
 
@@ -100,7 +103,7 @@ python gui.py
 
 That is the normal way to run this project.
 
-A few practical notes:
+## Notes
 
 - `gui.py` depends on `vlm.py`, so if the GUI opens but detection does not work, check that `vlm.py` is still running.
 - The socket used between them is `/tmp/vlm.sock`.
@@ -109,7 +112,7 @@ A few practical notes:
 - Default serial port is usually `/dev/ttyUSB0`.
 - If you use `cam.sh`, the virtual camera is created at `/dev/video2`.
 
-If something is not working:
+## Troubleshooting
 
 - Camera issue: check the selected camera index and make sure your user can access `/dev/video*`.
 - Android phone camera issue: make sure `cam.sh` is running, `scrcpy` can see the phone, and `/dev/video2` was created.
