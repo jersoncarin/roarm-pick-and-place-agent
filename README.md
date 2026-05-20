@@ -12,6 +12,7 @@ What each file is for:
 - `roarm.py` talks to the robotic arm over serial and sends pose commands.
 - `pid.py` contains the PID controllers used for movement correction.
 - `llm_tools.py` connects to an OpenAI-compatible API such as Ollama, OpenRouter, or OpenAI.
+- `cam.sh` sets up an Android phone camera as a virtual Linux camera using `scrcpy` and `v4l2loopback`.
 - `settings.json` stores GUI settings like camera index and serial port.
 - `.env` stores secrets and runtime config.
 - `.env.example` is the template for `.env`.
@@ -21,6 +22,7 @@ What you need:
 - Python 3.10 or newer
 - Linux
 - a USB camera
+- or an Android phone camera through `scrcpy`
 - access to the RoArm serial device
 - optional CUDA GPU if you want faster SAM3 inference
 
@@ -57,6 +59,31 @@ You need to:
 
 If Hugging Face access is not approved yet, SAM3 may fail to load.
 
+Using an Android phone as the camera:
+
+If you want to use your Android phone instead of a USB camera, use `cam.sh`.
+
+What it does:
+
+- unloads and reloads `v4l2loopback`
+- creates `/dev/video2` with the label `AndroidCam`
+- starts `./scrcpy/scrcpy` with the phone camera as the video source
+- forwards that stream into `/dev/video2`
+
+Run it like this:
+
+```bash
+bash cam.sh
+```
+
+Then set the camera index in the GUI to `2` if needed, because `cam.sh` currently creates `/dev/video2`.
+
+This requires:
+
+- an Android phone connected and supported by `scrcpy`
+- `v4l2loopback` installed
+- permission to run the `sudo modprobe` commands in the script
+
 How to run:
 
 Start the VLM server first:
@@ -80,10 +107,12 @@ A few practical notes:
 - `sam3.pt` is in the project root folder and is used by `vlm.py`.
 - Camera and serial settings can be changed from the GUI and are saved in `settings.json`.
 - Default serial port is usually `/dev/ttyUSB0`.
+- If you use `cam.sh`, the virtual camera is created at `/dev/video2`.
 
 If something is not working:
 
 - Camera issue: check the selected camera index and make sure your user can access `/dev/video*`.
+- Android phone camera issue: make sure `cam.sh` is running, `scrcpy` can see the phone, and `/dev/video2` was created.
 - Serial issue: check the selected serial device like `/dev/ttyUSB0` or `/dev/ttyACM0`.
 - LLM issue: check `OPENAI_BASE_URL`, `OPENAI_API_KEY`, and `OPENAI_MODEL`.
 - SAM3 issue: check `HUGGINGFACE_TOKEN`, make sure your Hugging Face access request was approved, and make sure `sam3.pt` is in the project root folder.
