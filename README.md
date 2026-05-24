@@ -2,6 +2,8 @@
 
 This project controls a RoArm robotic arm with camera-based pick and place.
 
+Demo: https://www.youtube.com/watch?v=-CvQtq6s76Y
+
 Use `gui.py` as the main app.
 
 `main.py` is not used anymore and was removed to avoid confusion.
